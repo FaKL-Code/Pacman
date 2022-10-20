@@ -6,16 +6,40 @@ screen = pygame.display.set_mode((800, 600), 0)
 
 AMARELO = (255, 255, 0)
 PRETO = (0, 0, 0)
+AZUL = (0, 0, 255)
 
+class Cenario:
+    def __init__(self, tamanho):
+        self.tamanho = tamanho
+        self.matriz = [
+            [2, 2, 2, 2, 2],
+            [2, 0, 2, 0, 2],
+            [2, 0, 2, 0, 2],
+            [2, 0, 2, 0, 2],
+            [2, 2, 2, 2, 2]
+        ]
+        
+    def draw_line(self, screen, num_linha, linha):
+        for num_coluna, coluna in enumerate(linha):
+            x = num_coluna * self.tamanho
+            y = num_linha * self.tamanho
+            cor = PRETO
+            if coluna == 2:
+                cor = AZUL
+            pygame.draw.rect(screen, cor, (x, y, self.tamanho, self.tamanho), 0)
+
+    def draw(self, screen):
+        for num_linha, linha in enumerate(self.matriz):
+            self.draw_line(screen, num_linha, linha)
 class Pacman:
-    def __init__(self):
+    def __init__(self, tamanho):
         self.centro_x = 400
         self.centro_y = 300
         self.x = 30
         self.y = 240
         self.vel_x = 0.1
         self.vel_y = 0.1
-        self.tamanho = 100
+        self.tamanho = tamanho
         self.raio = self.tamanho // 2
         self.cor = AMARELO
         
@@ -49,12 +73,14 @@ class Pacman:
         pygame.draw.circle(screen, PRETO, (olho_x, olho_y), olho_raio, 0)
         
 if __name__ == '__main__':
-    pacman = Pacman()
-    
+    size = 600//30
+    pacman = Pacman(size)
+    cenario = Cenario(size)
     while True:
         pacman.update()
         
         screen.fill((0, 0, 0))
+        cenario.draw(screen)
         pacman.draw(screen)
         
         for event in pygame.event.get():
