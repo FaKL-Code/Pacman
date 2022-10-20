@@ -20,17 +20,17 @@ class Pacman:
         self.cor = AMARELO
         
     def update(self):
-        self.x += self.vel_x
-        self.y += self.vel_y
+        self.centro_x += self.vel_x
+        self.centro_y += self.vel_y
         
-        if self.x > 800 - self.raio:
+        if self.centro_x > 800 - self.raio:
             self.vel_x = -0.1
-        elif self.x < 0 + self.raio:
+        elif self.centro_x < 0 + self.raio:
             self.vel_x = 0.1
             
-        if self.y > 600 - self.raio:
+        if self.centro_y > 600 - self.raio:
             self.vel_y = -0.1
-        elif self.y < 0 + self.raio:
+        elif self.centro_y < 0 + self.raio:
             self.vel_y = 0.1
             
     def draw(self, screen):
