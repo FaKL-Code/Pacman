@@ -1,6 +1,6 @@
 import pygame
 
-pygame.init
+pygame.init()
 
 screen = pygame.display.set_mode((800, 600), 0)
 
@@ -10,9 +10,10 @@ AZUL = (0, 0, 255)
 VELOCIDADE = 0.5
 
 class Cenario:
-    def __init__(self, tamanho, pac):
-        self.pacman = pac
+    def __init__(self, tamanho, pacman):
+        self.pacman = pacman
         self.tamanho = tamanho
+        self.pontos = 0
         self.matriz = [
             [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
             [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
@@ -60,24 +61,45 @@ class Cenario:
 
     def draw(self, tela):
         for numero_linha, linha in enumerate(self.matriz):
-            self.pintar_linha(tela, numero_linha, linha)
+            self.draw_line(tela, numero_linha, linha)
+
+    def calcular_regras(self):
+        col = self.pacman.coluna_intent
+        lin = self.pacman.linha_intent
+        if col >= 0 and col < 28 and lin >= 0 and lin < 29:
+            if self.matriz[int(lin)][int(col)] != 2:
+                self.pacman.aceitar_movimento()
+                if self.matriz[int(lin)][int(col)] == 1:
+                    self.pontos += 1
+                    self.matriz[int(lin)][int(col)] = 0
 
 class Pacman:
-    def __init__(self):
+    def __init__(self, size):
         self.centro_x = 400
         self.centro_y = 300
-        self.x = 30
-        self.y = 240
         self.vel_x = 0
         self.vel_y = 0
-        self.tamanho = 100
+        self.tamanho = size
         self.raio = self.tamanho // 2
         self.cor = AMARELO
+        self.coluna = 1
+        self.linha = 1
+        self.coluna_intent = int(self.coluna)
+        self.linha_intent = int(self.linha)
+        
+    def aceitar_movimento(self):
+        self.linha = self.linha_intent
+        self.coluna = self.coluna_intent
         
     def update(self):
         self.centro_x += self.vel_x
         self.centro_y += self.vel_y
 
+    def calcular_regras(self):
+        self.coluna_intent = self.coluna + self.vel_x
+        self.linha_intent = self.linha + self.vel_y
+        self.centro_x = int(self.coluna * self.tamanho + self.raio)
+        self.centro_y = int(self.linha * self.tamanho + self.raio)
             
     def draw(self, screen):
         pygame.draw.circle(screen, self.cor, (self.centro_x, self.centro_y), self.raio, 0)
@@ -121,6 +143,9 @@ if __name__ == '__main__':
     cenario = Cenario(size, pacman)
     
     while True:
+        pacman.calcular_regras()
+        cenario.calcular_regras()
+        
         pacman.update()
         
         screen.fill((0, 0, 0))
