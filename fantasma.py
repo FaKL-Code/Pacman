@@ -5,12 +5,20 @@ from jogo import Jogo
 PRETO = (0, 0, 0)
 BRANCO = (255, 255, 255)
 
+VELOCIDADE = 0.6
+
+ACIMA = 1
+ABAIXO = 2
+DIREITA = 3
+ESQUERDA = 4
+
 class Fantasma(Jogo):
     def __init__(self, cor, tamanho, screen) -> None:
         self.coluna = 6
         self.linha = 8
         self.cor = cor
         self.tamanho = tamanho
+        self.direcao = 2
         self.draw(screen)
     
     def draw(self, screen):
@@ -42,7 +50,14 @@ class Fantasma(Jogo):
         pygame.draw.circle(screen, PRETO, (olho_d_x, olho_d_y), olho_raio_int, 0)    
     
     def calcular_regras(self):
-        pass
+        if self.direcao == ACIMA:
+            self.linha -= VELOCIDADE
+        elif self.direcao == ABAIXO:
+            self.linha += VELOCIDADE
+        elif self.direcao == DIREITA:
+            self.coluna += VELOCIDADE
+        elif self.direcao == ESQUERDA:
+            self.coluna -= VELOCIDADE
     
     def processar_eventos(self, evts):
         pass

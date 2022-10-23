@@ -13,12 +13,13 @@ screen = pygame.display.set_mode((800, 600), 0)
 size = 600//30
 pacman = Pacman(size)
 blinky = Fantasma(VERMELHO, size, screen)
-cenario = Cenario(size, pacman)
+cenario = Cenario(size, pacman, blinky)
 
 if __name__ == '__main__':
     while True:
         pacman.calcular_regras()
         cenario.calcular_regras()
+        blinky.calcular_regras()
 
         screen.fill(PRETO)
         cenario.draw(screen)

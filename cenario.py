@@ -1,3 +1,4 @@
+import random
 import pygame
 
 from jogo import Jogo
@@ -10,9 +11,15 @@ PRETO = (0, 0, 0)
 AZUL = (0, 0, 255)
 VELOCIDADE = 0.01
 
+ACIMA = 1
+ABAIXO = 2
+DIREITA = 3
+ESQUERDA = 4
+
 class Cenario(Jogo):
-    def __init__(self, tamanho, pacman):
+    def __init__(self, tamanho, pacman, fantasma):
         self.pacman = pacman
+        self.fantasma = fantasma
         self.tamanho = tamanho
         self.pontos = 0
         self.matriz = [
@@ -65,6 +72,11 @@ class Cenario(Jogo):
         Score.draw_score(self.tamanho, tela, self.pontos)
 
     def calcular_regras(self):
+        direcoes = self.get_direcoes(self.fantasma.linha, self.fantasma.coluna)
+        
+        if len(direcoes) >= 2:
+            self.fantasma.direcao = random.choice(direcoes)
+        
         col = self.pacman.coluna_intent
         lin = self.pacman.linha_intent
         if col >= 0 and col < 28 and lin >= 0 and lin < 29:
@@ -78,3 +90,15 @@ class Cenario(Jogo):
         for e in evts:
             if e.type == pygame.QUIT:
                 exit()
+                
+    def get_direcoes(self, linha, coluna):
+        direcoes = []
+        if self.matriz[int(linha)][int(coluna - 1)] != 2:
+            direcoes.append(ESQUERDA)
+        if self.matriz[int(linha)][int(coluna + 1)] != 2:
+            direcoes.append(DIREITA)
+        if self.matriz[int(linha - 1)][int(coluna)] != 2:
+            direcoes.append(ACIMA)
+        if self.matriz[int(linha + 1)][int(coluna)] != 2:
+            direcoes.append(ABAIXO)
+        return direcoes
