@@ -21,8 +21,8 @@ class Pacman(Jogo, Movel):
         self.vel_y = 0
         self.tamanho = size
         self.raio = self.tamanho // 2
-        self.coluna = 1
-        self.linha = 1
+        self.coluna = 14
+        self.linha = 17
         self.coluna_intent = int(self.coluna)
         self.linha_intent = int(self.linha)
         
