@@ -2,6 +2,7 @@ import random
 import pygame
 
 from jogo import Jogo
+from movimento import Movel
 
 PRETO = (0, 0, 0)
 BRANCO = (255, 255, 255)
@@ -13,15 +14,15 @@ ABAIXO = 2
 DIREITA = 3
 ESQUERDA = 4
 
-class Fantasma(Jogo):
+class Fantasma(Jogo, Movel):
     def __init__(self, cor, tamanho, screen) -> None:
         self.coluna = 6
         self.linha = 8
         self.cor = cor
         self.tamanho = tamanho
         self.direcao = 2
-        self.linha_intencao = self.linha
-        self.coluna_intencao = self.coluna
+        self.linha_intent = self.linha
+        self.coluna_intent = self.coluna
         self.draw(screen)
     
     def draw(self, screen):
@@ -54,21 +55,24 @@ class Fantasma(Jogo):
     
     def calcular_regras(self):
         if self.direcao == ACIMA:
-            self.linha_intencao -= VELOCIDADE
+            self.linha_intent -= VELOCIDADE
         elif self.direcao == ABAIXO:
-            self.linha_intencao += VELOCIDADE
+            self.linha_intent += VELOCIDADE
         elif self.direcao == DIREITA:
-            self.coluna_intencao += VELOCIDADE
+            self.coluna_intent += VELOCIDADE
         elif self.direcao == ESQUERDA:
-            self.coluna_intencao -= VELOCIDADE
+            self.coluna_intent -= VELOCIDADE
             
     def aceitar_movimento(self):
-        self.linha = self.linha_intencao
-        self.coluna = self.coluna_intencao
+        self.linha = self.linha_intent
+        self.coluna = self.coluna_intent
         
     def recusar_movimento(self, direcoes):
-        self.linha_intencao = self.linha
-        self.coluna_intencao = self.coluna
+        self.linha_intent = self.linha
+        self.coluna_intent = self.coluna
+        self.mudar_direcao(direcoes)
+        
+    def esquina(self, direcoes):
         self.mudar_direcao(direcoes)
       
     def mudar_direcao(self, direcoes):

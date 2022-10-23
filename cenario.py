@@ -20,7 +20,7 @@ ESQUERDA = 4
 class Cenario(Jogo):
     def __init__(self, tamanho, pacman, fantasma):
         self.pacman = pacman
-        self.fantasma = fantasma
+        self.moveis = [pacman, fantasma]
         self.tamanho = tamanho
         self.pontos = 0
         self.matriz = [
@@ -73,27 +73,23 @@ class Cenario(Jogo):
         Score.draw_score(self.tamanho, tela, self.pontos)
 
     def calcular_regras(self):
-        direcoes = self.get_direcoes(self.fantasma.linha, self.fantasma.coluna)
-        
-        if len(direcoes) >= 3:
-            Fantasma.mudar_direcao(self.fantasma, direcoes)
-        
-        col = self.pacman.coluna_intent
-        lin = self.pacman.linha_intent
-        if col >= 0 and col < 28 and lin >= 0 and lin < 29:
-            if self.matriz[int(lin)][int(col)] != 2:
-                self.pacman.aceitar_movimento()
-                if self.matriz[int(lin)][int(col)] == 1:
-                    self.pontos += 1
-                    self.matriz[int(lin)][int(col)] = 0
-                    
-        col_fantasma = self.fantasma.coluna_intencao
-        lin_fantasma = self.fantasma.linha_intencao
-        if col_fantasma >= 0 and col_fantasma < 28 and lin_fantasma >= 0 and lin_fantasma < 29:
-            if self.matriz[int(lin_fantasma)][int(col_fantasma)] != 2:
-                self.fantasma.aceitar_movimento()
-            else:
-                self.fantasma.recusar_movimento(direcoes)
+        for mov in self.moveis:
+            lin = int(mov.linha)
+            col = int(mov.coluna)
+            lin_intencao = int(mov.linha_intent)
+            col_intencao = int(mov.coluna_intent)
+            direcoes = self.get_direcoes(lin, col)
+            
+            if len(direcoes) >= 3:
+                mov.esquina(direcoes)
+            if 0 <= lin_intencao < len(self.matriz) and 0 <= col_intencao < len(self.matriz[0]):
+                if self.matriz[lin_intencao][col_intencao] != 2:
+                    mov.aceitar_movimento()
+                    if self.matriz[lin][col] == 1 and mov == self.pacman:
+                        self.pontos += 1
+                        self.matriz[lin][col] = 0
+                else:
+                    mov.recusar_movimento(direcoes)
     
     def processar_eventos(self, evts):
         for e in evts:

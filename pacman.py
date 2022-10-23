@@ -2,6 +2,7 @@ import pygame
 
 from jogo import Jogo
 from cenario import Cenario
+from movimento import Movel
 
 pygame.init()
 
@@ -12,7 +13,7 @@ PRETO = (0, 0, 0)
 AZUL = (0, 0, 255)
 VELOCIDADE = 0.5
 
-class Pacman:
+class Pacman(Jogo, Movel):
     def __init__(self, size):
         self.centro_x = 400
         self.centro_y = 300
@@ -50,7 +51,7 @@ class Pacman:
         olho_raio = self.raio / 5
         pygame.draw.circle(screen, PRETO, (olho_x, olho_y), olho_raio, 0)   
 
-    def processa_eventos(self, eventos):
+    def processar_eventos(self, eventos):
         for e in eventos:
             if e.type == pygame.KEYDOWN:
                 if e.key == pygame.K_RIGHT:
@@ -74,3 +75,10 @@ class Pacman:
     def aceitar_movimento(self):
         self.linha = self.linha_intent
         self.coluna = self.coluna_intent
+        
+    def recusar_movimento(self, direcoes):
+        self.linha_intencao = self.linha
+        self.coluna_intencao = self.coluna
+
+    def esquina(self, direcoes):
+        pass

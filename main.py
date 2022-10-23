@@ -33,7 +33,7 @@ if __name__ == '__main__':
             if event.type == pygame.QUIT:
                 pygame.quit()
                 exit()
-        pacman.processa_eventos(events)
+        pacman.processar_eventos(events)
         cenario.processar_eventos(events)
         pygame.display.update() 
                     
