@@ -26,6 +26,12 @@ PAUSE = 1
 GAMEOVER = 2
 WIN = 3
 
+INICIO_PACMAN_X = 14
+INICIO_PACMAN_Y = 17
+
+INICIO_FANTASMA_X = 14
+INICIO_FANTASMA_Y = 14
+
 class Cenario(Jogo):
     def __init__(self, tamanho, pacman):
         self.pacman = pacman
@@ -33,6 +39,7 @@ class Cenario(Jogo):
         self.tamanho = tamanho
         self.pontos = 0
         self.estado = JOGANDO
+        self.vidas = 3
         self.matriz = [
             [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
             [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
@@ -102,7 +109,7 @@ class Cenario(Jogo):
     def draw_jogando(self, tela):
         for numero_linha, linha in enumerate(self.matriz):
             self.draw_line(tela, numero_linha, linha)
-        Score.draw_score(self.tamanho, tela, self.pontos)
+        Score.draw_score(self.tamanho, tela, self.pontos, self.vidas)
 
     def calcular_regras(self):
         if self.estado == JOGANDO:
@@ -139,7 +146,19 @@ class Cenario(Jogo):
                     mov.esquina(direcoes)
                         
             if isinstance(mov, Fantasma) and int(mov.linha) == int(self.pacman.linha) and int(mov.coluna) == int(self.pacman.coluna):
-                self.estado = GAMEOVER
+                self.vidas -= 1
+                if self.vidas == 0:
+                    self.estado = GAMEOVER
+                else:
+                    self.pacman.coluna = INICIO_PACMAN_X
+                    self.pacman.linha = INICIO_PACMAN_Y
+                    for fantasma in self.moveis:
+                        if fantasma != self.pacman:
+                            fantasma.coluna = INICIO_FANTASMA_X
+                            fantasma.linha = INICIO_FANTASMA_Y
+                            fantasma.linha_intent = INICIO_FANTASMA_Y
+                            fantasma.coluna_intent = INICIO_FANTASMA_X
+                    pygame.time.wait(500)
             else:
                 if 0 <= lin_intencao < len(self.matriz) and 0 <= col_intencao < len(self.matriz[0]):
                     if self.matriz[lin_intencao][col_intencao] != 2:

@@ -13,6 +13,9 @@ PRETO = (0, 0, 0)
 AZUL = (0, 0, 255)
 VELOCIDADE = 0.5
 
+INICIOX = 14
+INICIOY = 17
+
 class Pacman(Jogo, Movel):
     def __init__(self, size):
         self.centro_x = 400
@@ -21,10 +24,12 @@ class Pacman(Jogo, Movel):
         self.vel_y = 0
         self.tamanho = size
         self.raio = self.tamanho // 2
-        self.coluna = 14
-        self.linha = 17
+        self.coluna = INICIOX
+        self.linha = INICIOY
         self.coluna_intent = int(self.coluna)
         self.linha_intent = int(self.linha)
+        self.abertura = 0
+        self.vel_abertura = 2
         
     def update(self):
         self.centro_x += self.vel_x
@@ -39,9 +44,15 @@ class Pacman(Jogo, Movel):
     def draw(self, screen):
         pygame.draw.circle(screen, AMARELO, (self.centro_x, self.centro_y), self.raio, 0)
         
+        self.abertura += self.vel_abertura
+        if self.abertura > self.raio:
+            self.vel_abertura = -2
+        if self.abertura <= 0:
+            self.vel_abertura = 2
+        
         canto_boca = (self.centro_x, self.centro_y)
-        labio_superior = (self.centro_x + self.raio, self.centro_y - self.raio)
-        labio_inferior = (self.centro_x + self.raio, self.centro_y)
+        labio_superior = (self.centro_x + self.raio, self.centro_y - self.abertura)
+        labio_inferior = (self.centro_x + self.raio, self.centro_y + self.abertura)
         pontos = [canto_boca, labio_superior, labio_inferior]
         
         pygame.draw.polygon(screen, PRETO, pontos, 0)

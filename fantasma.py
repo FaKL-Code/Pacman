@@ -14,10 +14,13 @@ ABAIXO = 2
 DIREITA = 3
 ESQUERDA = 4
 
+INICIOX = 14
+INICIOY = 14
+
 class Fantasma(Jogo, Movel):
     def __init__(self, cor, tamanho, screen) -> None:
-        self.coluna = 14
-        self.linha = 14
+        self.coluna = INICIOX
+        self.linha = INICIOY
         self.cor = cor
         self.tamanho = tamanho
         self.direcao = 2
