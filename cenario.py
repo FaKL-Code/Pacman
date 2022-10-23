@@ -1,9 +1,14 @@
 import random
+from tkinter import font
 import pygame
 from fantasma import Fantasma
 
 from jogo import Jogo
 from score import Score
+
+pygame.font.init()
+
+font = pygame.font.SysFont("arial", 20, True, False)
 
 screen = pygame.display.set_mode((800, 600), 0)
 
@@ -17,12 +22,18 @@ ABAIXO = 2
 DIREITA = 3
 ESQUERDA = 4
 
+JOGANDO = 0
+PAUSE = 1
+GAMEOVER = 2
+WIN = 3
+
 class Cenario(Jogo):
     def __init__(self, tamanho, pacman):
         self.pacman = pacman
         self.moveis = []
         self.tamanho = tamanho
         self.pontos = 0
+        self.estado = JOGANDO
         self.matriz = [
             [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
             [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
@@ -69,13 +80,35 @@ class Cenario(Jogo):
             pygame.draw.rect(tela, cor, (x, y, self.tamanho, self.tamanho), 0)
             if coluna == 1:
                 pygame.draw.circle(tela, AMARELO, (x + half, y + half),self.tamanho // 10, 0)
-
+                
     def draw(self, tela):
+        if self.estado == JOGANDO:
+            self.draw_jogando(tela)
+        elif self.estado == PAUSE:
+            self.draw_jogando(tela)
+            self.draw_pause(tela)
+
+    def draw_pause(self, tela):
+        img_text = font.render("P A U S E", True, AMARELO)
+        tx = (tela.get_width() - img_text.get_width()) // 2
+        ty = (tela.get_height() - img_text.get_height()) // 2
+        tela.blit(img_text, (tx, ty))
+
+    def draw_jogando(self, tela):
         for numero_linha, linha in enumerate(self.matriz):
             self.draw_line(tela, numero_linha, linha)
         Score.draw_score(self.tamanho, tela, self.pontos)
 
     def calcular_regras(self):
+        if self.estado == JOGANDO:
+            self.calcular_regras_jogando()
+        elif self.estado == PAUSE:
+            self.calcular_regras_pause()
+            
+    def calcular_regras_pause(self):
+        pass
+
+    def calcular_regras_jogando(self):
         for mov in self.moveis:
             lin = int(mov.linha)
             col = int(mov.coluna)
@@ -102,6 +135,12 @@ class Cenario(Jogo):
         for e in evts:
             if e.type == pygame.QUIT:
                 exit()
+            elif e.type == pygame.KEYDOWN:
+                if e.key == pygame.K_ESCAPE:
+                    if self.estado == JOGANDO:
+                        self.estado = PAUSE
+                    else:
+                        self.estado = JOGANDO
                 
     def get_direcoes(self, linha, coluna):
         direcoes = []
