@@ -1,3 +1,4 @@
+import random
 import pygame
 
 from jogo import Jogo
@@ -19,6 +20,8 @@ class Fantasma(Jogo):
         self.cor = cor
         self.tamanho = tamanho
         self.direcao = 2
+        self.linha_intencao = self.linha
+        self.coluna_intencao = self.coluna
         self.draw(screen)
     
     def draw(self, screen):
@@ -51,13 +54,25 @@ class Fantasma(Jogo):
     
     def calcular_regras(self):
         if self.direcao == ACIMA:
-            self.linha -= VELOCIDADE
+            self.linha_intencao -= VELOCIDADE
         elif self.direcao == ABAIXO:
-            self.linha += VELOCIDADE
+            self.linha_intencao += VELOCIDADE
         elif self.direcao == DIREITA:
-            self.coluna += VELOCIDADE
+            self.coluna_intencao += VELOCIDADE
         elif self.direcao == ESQUERDA:
-            self.coluna -= VELOCIDADE
-    
+            self.coluna_intencao -= VELOCIDADE
+            
+    def aceitar_movimento(self):
+        self.linha = self.linha_intencao
+        self.coluna = self.coluna_intencao
+        
+    def recusar_movimento(self, direcoes):
+        self.linha_intencao = self.linha
+        self.coluna_intencao = self.coluna
+        self.mudar_direcao(direcoes)
+      
+    def mudar_direcao(self, direcoes):
+        self.direcao = random.choice(direcoes)
+        
     def processar_eventos(self, evts):
         pass

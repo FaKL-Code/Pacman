@@ -1,5 +1,6 @@
 import random
 import pygame
+from fantasma import Fantasma
 
 from jogo import Jogo
 from score import Score
@@ -74,8 +75,8 @@ class Cenario(Jogo):
     def calcular_regras(self):
         direcoes = self.get_direcoes(self.fantasma.linha, self.fantasma.coluna)
         
-        if len(direcoes) >= 2:
-            self.fantasma.direcao = random.choice(direcoes)
+        if len(direcoes) >= 3:
+            Fantasma.mudar_direcao(self.fantasma, direcoes)
         
         col = self.pacman.coluna_intent
         lin = self.pacman.linha_intent
@@ -85,6 +86,14 @@ class Cenario(Jogo):
                 if self.matriz[int(lin)][int(col)] == 1:
                     self.pontos += 1
                     self.matriz[int(lin)][int(col)] = 0
+                    
+        col_fantasma = self.fantasma.coluna_intencao
+        lin_fantasma = self.fantasma.linha_intencao
+        if col_fantasma >= 0 and col_fantasma < 28 and lin_fantasma >= 0 and lin_fantasma < 29:
+            if self.matriz[int(lin_fantasma)][int(col_fantasma)] != 2:
+                self.fantasma.aceitar_movimento()
+            else:
+                self.fantasma.recusar_movimento(direcoes)
     
     def processar_eventos(self, evts):
         for e in evts:
