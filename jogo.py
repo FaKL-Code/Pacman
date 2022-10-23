@@ -4,8 +4,6 @@ from abc import abstractmethod, ABCMeta
 
 screen = pygame.display.set_mode((800, 600), 0)
 
-VELOCIDADE = 0.01
-
 class Jogo(metaclass=ABCMeta):
     @abstractmethod
     def draw(self, screen):

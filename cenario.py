@@ -15,7 +15,6 @@ screen = pygame.display.set_mode((800, 600), 0)
 AMARELO = (255, 255, 0)
 PRETO = (0, 0, 0)
 AZUL = (0, 0, 255)
-VELOCIDADE = 0.01
 
 ACIMA = 1
 ABAIXO = 2
@@ -86,13 +85,19 @@ class Cenario(Jogo):
             self.draw_jogando(tela)
         elif self.estado == PAUSE:
             self.draw_jogando(tela)
-            self.draw_pause(tela)
-
-    def draw_pause(self, tela):
-        img_text = font.render("P A U S E", True, AMARELO)
+            self.draw_center_text(tela, "P A U S E")
+        elif self.estado == GAMEOVER:
+            self.draw_jogando(tela)
+            self.draw_center_text(tela, "G A M E  O V E R")
+        elif self.estado == WIN:
+            self.draw_jogando(tela)
+            self.draw_center_text(tela, "Y O U  W I N")
+    
+    def draw_center_text(self, tela, text):
+        img_text = font.render(text, True, AMARELO)
         tx = (tela.get_width() - img_text.get_width()) // 2
         ty = (tela.get_height() - img_text.get_height()) // 2
-        tela.blit(img_text, (tx, ty))
+        tela.blit(img_text, (tx, ty))        
 
     def draw_jogando(self, tela):
         for numero_linha, linha in enumerate(self.matriz):
@@ -104,6 +109,16 @@ class Cenario(Jogo):
             self.calcular_regras_jogando()
         elif self.estado == PAUSE:
             self.calcular_regras_pause()
+        elif self.estado == GAMEOVER:
+            self.calcular_regras_gameover()
+        elif self.estado == WIN:
+            self.calcular_regras_win()
+            
+    def calcular_regras_win(self):
+        pass
+            
+    def calcular_regras_gameover(self):
+        pass
             
     def calcular_regras_pause(self):
         pass
@@ -118,18 +133,24 @@ class Cenario(Jogo):
             
             if len(direcoes) >= 3:
                 if self.matriz[lin][col] == 3:
-                    direcao_inicial = [1]
+                    direcao_inicial = [ACIMA]
                     mov.esquina(direcao_inicial)
                 else:
                     mov.esquina(direcoes)
-            if 0 <= lin_intencao < len(self.matriz) and 0 <= col_intencao < len(self.matriz[0]):
-                if self.matriz[lin_intencao][col_intencao] != 2:
-                    mov.aceitar_movimento()
-                    if self.matriz[lin][col] == 1 and mov == self.pacman:
-                        self.pontos += 1
-                        self.matriz[lin][col] = 0
-                else:
-                    mov.recusar_movimento(direcoes)
+                        
+            if isinstance(mov, Fantasma) and int(mov.linha) == int(self.pacman.linha) and int(mov.coluna) == int(self.pacman.coluna):
+                self.estado = GAMEOVER
+            else:
+                if 0 <= lin_intencao < len(self.matriz) and 0 <= col_intencao < len(self.matriz[0]):
+                    if self.matriz[lin_intencao][col_intencao] != 2:
+                        mov.aceitar_movimento()
+                        if self.matriz[lin][col] == 1 and mov == self.pacman:
+                            self.pontos += 1
+                            self.matriz[lin][col] = 0
+                            if not any(1 in linha for linha in self.matriz) and not any(1 in coluna for coluna in self.matriz):
+                                self.estado = WIN
+                    else:
+                        mov.recusar_movimento(direcoes)
     
     def processar_eventos(self, evts):
         for e in evts:
