@@ -18,9 +18,9 @@ DIREITA = 3
 ESQUERDA = 4
 
 class Cenario(Jogo):
-    def __init__(self, tamanho, pacman, fantasma):
+    def __init__(self, tamanho, pacman):
         self.pacman = pacman
-        self.moveis = [pacman, fantasma]
+        self.moveis = []
         self.tamanho = tamanho
         self.pontos = 0
         self.matriz = [
@@ -36,7 +36,7 @@ class Cenario(Jogo):
             [2, 2, 2, 1, 2, 2, 1, 2, 2, 2, 2, 2, 1, 2, 2, 1, 2, 2, 2, 2, 2, 1, 2, 2, 1, 2, 2, 2],
             [2, 2, 2, 1, 2, 2, 1, 2, 2, 2, 2, 2, 1, 2, 2, 1, 2, 2, 2, 2, 2, 1, 2, 2, 1, 2, 2, 2],
             [2, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 2],
-            [2, 1, 2, 2, 2, 2, 1, 2, 2, 1, 2, 2, 0, 0, 0, 0, 2, 2, 1, 2, 2, 1, 2, 2, 2, 2, 1, 2],
+            [2, 1, 2, 2, 2, 2, 1, 2, 2, 1, 2, 2, 2, 0, 0, 2, 2, 2, 1, 2, 2, 1, 2, 2, 2, 2, 1, 2],
             [2, 1, 2, 2, 2, 2, 1, 2, 2, 1, 2, 0, 0, 0, 0, 0, 0, 2, 1, 2, 2, 1, 2, 2, 2, 2, 1, 2],
             [2, 1, 1, 1, 1, 1, 1, 2, 2, 1, 2, 0, 0, 0, 0, 0, 0, 2, 1, 2, 2, 1, 1, 1, 1, 1, 1, 2],
             [2, 1, 2, 2, 2, 2, 1, 2, 2, 1, 2, 0, 0, 0, 0, 0, 0, 2, 1, 2, 2, 1, 2, 2, 2, 2, 1, 2],
@@ -55,6 +55,9 @@ class Cenario(Jogo):
             [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
         ]
 
+    def adicionar_movel(self, obj):
+        self.moveis.append(obj)
+    
     def draw_line(self, tela, numero_linha, linha):
         for numero_coluna, coluna in enumerate(linha):
             x = numero_coluna * self.tamanho

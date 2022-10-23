@@ -16,8 +16,8 @@ ESQUERDA = 4
 
 class Fantasma(Jogo, Movel):
     def __init__(self, cor, tamanho, screen) -> None:
-        self.coluna = 6
-        self.linha = 8
+        self.coluna = 14
+        self.linha = 14
         self.cor = cor
         self.tamanho = tamanho
         self.direcao = 2
