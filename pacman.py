@@ -7,12 +7,10 @@ pygame.init()
 
 screen = pygame.display.set_mode((800, 600), 0)
 
-fonte = pygame.font.SysFont('arial', 24, True, False)
-
 AMARELO = (255, 255, 0)
 PRETO = (0, 0, 0)
 AZUL = (0, 0, 255)
-VELOCIDADE = 0.01
+VELOCIDADE = 0.5
 
 class Pacman:
     def __init__(self, size):
@@ -26,10 +24,6 @@ class Pacman:
         self.linha = 1
         self.coluna_intent = int(self.coluna)
         self.linha_intent = int(self.linha)
-        
-    def aceitar_movimento(self):
-        self.linha = self.linha_intent
-        self.coluna = self.coluna_intent
         
     def update(self):
         self.centro_x += self.vel_x
@@ -54,25 +48,29 @@ class Pacman:
         olho_x = self.centro_x + self.raio / 3
         olho_y = self.centro_y - self.raio * 0.7
         olho_raio = self.raio / 5
-        pygame.draw.circle(screen, PRETO, (olho_x, olho_y), olho_raio, 0)
-        
-    def processa_eventos(self, event):
-        for event in events:
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_LEFT:
-                    self.vel_x = -VELOCIDADE
-                elif event.key == pygame.K_RIGHT:
+        pygame.draw.circle(screen, PRETO, (olho_x, olho_y), olho_raio, 0)   
+
+    def processa_eventos(self, eventos):
+        for e in eventos:
+            if e.type == pygame.KEYDOWN:
+                if e.key == pygame.K_RIGHT:
                     self.vel_x = VELOCIDADE
-                elif event.key == pygame.K_UP:
+                elif e.key == pygame.K_LEFT:
+                    self.vel_x = -VELOCIDADE
+                elif e.key == pygame.K_UP:
                     self.vel_y = -VELOCIDADE
-                elif event.key == pygame.K_DOWN:
+                elif e.key == pygame.K_DOWN:
                     self.vel_y = VELOCIDADE
-            elif event.type == pygame.KEYUP:
-                if event.key == pygame.K_LEFT:
+            elif e.type == pygame.KEYUP:
+                if e.key == pygame.K_RIGHT:
                     self.vel_x = 0
-                elif event.key == pygame.K_RIGHT:
+                elif e.key == pygame.K_LEFT:
                     self.vel_x = 0
-                elif event.key == pygame.K_UP:
+                elif e.key == pygame.K_UP:
                     self.vel_y = 0
-                elif event.key == pygame.K_DOWN:
+                elif e.key == pygame.K_DOWN:
                     self.vel_y = 0
+                                    
+    def aceitar_movimento(self):
+        self.linha = self.linha_intent
+        self.coluna = self.coluna_intent

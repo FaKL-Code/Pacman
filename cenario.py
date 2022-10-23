@@ -1,10 +1,9 @@
 import pygame
 
 from jogo import Jogo
+from score import Score
 
 screen = pygame.display.set_mode((800, 600), 0)
-
-fonte = pygame.font.SysFont('arial', 24, True, False)
 
 AMARELO = (255, 255, 0)
 PRETO = (0, 0, 0)
@@ -48,11 +47,6 @@ class Cenario(Jogo):
             [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
         ]
 
-    def draw_score(self, screen):
-        pontos_x = 29 * self.tamanho
-        img_pontos = fonte.render(f'Score: {self.pontos}', True, AMARELO)
-        screen.blit(img_pontos, (pontos_x, 50))
-
     def draw_line(self, tela, numero_linha, linha):
         for numero_coluna, coluna in enumerate(linha):
             x = numero_coluna * self.tamanho
@@ -68,7 +62,7 @@ class Cenario(Jogo):
     def draw(self, tela):
         for numero_linha, linha in enumerate(self.matriz):
             self.draw_line(tela, numero_linha, linha)
-        self.draw_score(tela)
+        Score.draw_score(self.tamanho, tela, self.pontos)
 
     def calcular_regras(self):
         col = self.pacman.coluna_intent
